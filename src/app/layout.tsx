@@ -3,6 +3,9 @@ import { Gabarito } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar/Navbar";
 import { Providers } from "./provider";
+import NextTopLoader from "nextjs-toploader";
+import { ClerkProvider} from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 const inter = Gabarito({ subsets: ["latin"] });
 
@@ -16,14 +19,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { userId } = auth();
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Providers>
-          <Navbar />
-          {children}
-        </Providers>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <link rel="icon" href="/logo.png" />
+        <body className={inter.className}>
+          {userId && (
+            <Providers>
+              <NextTopLoader color="#f97316" />
+              <Navbar userId={userId}  />
+              {children}
+            </Providers>
+          )}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

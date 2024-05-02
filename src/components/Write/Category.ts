@@ -1,5 +1,10 @@
 export const CategoryItem =[
   {
+    id: 0,
+    name: "All",
+    valueID: "All",
+  },
+  {
     id:1,
     name: "Art",
     valueID: "Art",

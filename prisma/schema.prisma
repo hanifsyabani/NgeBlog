@@ -14,13 +14,6 @@ datasource db {
 }
 
 
-model User{
-  id Int @id @default(autoincrement())
-  name String
-  email String
-  
-}
-
 
 model Post{
   id Int @id @default(autoincrement())
@@ -28,5 +21,15 @@ model Post{
   description String
   image String?
   category String?
+  createdAt DateTime @default(now()) @map("createdAt")
+}
+
+model Contact{
+  id Int @id @default(autoincrement())
+  name String
+  email String
+  phone String
+  subject String
+  message String
   createdAt DateTime @default(now()) @map("createdAt")
 }

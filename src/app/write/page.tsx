@@ -2,50 +2,39 @@
 
 import Header from "@/components/Header/Header";
 import { CategoryItem } from "@/components/Write/Category";
-import { useToast } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
+import { Spinner, useToast } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import ReactQuill from "react-quill";
 
 import "react-quill/dist/quill.snow.css";
 
 export default function Write() {
-  const [bodyBlog, setBodyBlog] = useState({});
   const [description, setDescription] = useState("");
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
   const toast = useToast();
-
-  
-
-  const handleInput = (
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement> | string
-  ) => {
-    if (typeof e === 'string') {
-      // Jika 'e' adalah string, ini berarti perubahan pada 'description'
-      setDescription(e);
-      // Masukkan 'description' ke dalam 'stateBodyBlog'
-      setBodyBlog((old) => ({ ...old, description: e }));
-    } else {
-      // Jika 'e' adalah event dari input atau textarea
-      const { name, value, type } = e.target;
-      const inputValue =
-        type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
-      setBodyBlog((old) => ({ ...old, [name]: inputValue }));
-    }
-  };
-
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState<File>();
 
   async function handleSubmit(e: any) {
     e.preventDefault();
+    setLoading(true);
+    if (!file) return;
     try {
-      
-      const res = await fetch("/api/blog", {
+      const data = new FormData();
+      data.append("file", file);
+      data.append("title", title);
+      data.append("category", category);
+      data.append("description", description);
+
+      const resFile = await fetch("/api/blog", {
         method: "POST",
-        body: JSON.stringify(bodyBlog),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        body: data,
       });
 
-      if (res.ok) {
+      if (resFile.ok) {
         toast({
           title: "Success",
           description: "Blog created successfully",
@@ -54,6 +43,8 @@ export default function Write() {
           isClosable: true,
           position: "top",
         });
+        window.location.reload();
+        setLoading(false);
       } else {
         toast({
           title: "Error",
@@ -63,18 +54,15 @@ export default function Write() {
           isClosable: true,
           position: "top",
         });
+        setLoading(false);
+        throw new Error("Failed to create blog");
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   }
-
-  // function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
-  //   const selectedFile = e.target.files?.[0]; // Handle ketika e.target.files adalah null
-  //   if (selectedFile) {
-  //     setFile(selectedFile);
-  //   }
-  // }
 
   return (
     <div className="pt-20 px-[4%]">
@@ -89,7 +77,7 @@ export default function Write() {
             placeholder="Add a title..."
             name="title"
             id="title"
-            onChange={handleInput}
+            onChange={(e) => setTitle(e.target.value)}
             className="border border-gray-400 w-full px-2 py-3"
           />
           <div className="mt-4">
@@ -97,7 +85,7 @@ export default function Write() {
               theme="snow"
               className="h-80"
               value={description}
-              onChange={(value) => handleInput(value)}
+              onChange={(e) => setDescription(e)}
             />
           </div>
         </div>
@@ -115,7 +103,8 @@ export default function Write() {
                 type="file"
                 style={{ display: "none" }}
                 id="file"
-                onChange={handleInput}
+                name="file"
+                onChange={(e) => setFile(e.target.files?.[0])}
               />
               <label htmlFor="file" className="cursor-pointer underline">
                 Upload Image
@@ -132,7 +121,7 @@ export default function Write() {
                     name="category"
                     id={item.valueID}
                     value={item.valueID}
-                    onChange={handleInput}
+                    onChange={(e) => setCategory(e.target.value)}
                   />
                   <label htmlFor={item.valueID}>{item.name}</label>
                 </div>
@@ -140,11 +129,17 @@ export default function Write() {
             </div>
           </div>
           <div className="flex justify-between items-center mt-4">
-            <button className="border border-primary px-1 py-2 rounded-lg w-1/2">
+            <button
+              type="button"
+              className="border border-primary px-1 py-2 rounded-lg w-1/2"
+            >
               Save as draft
             </button>
-            <button type="submit" className="bg-gradient-to-r from-primary to-secondary px-4 rounded-lg py-2 text-white cursor-pointer">
-              Publish
+            <button
+              type="submit"
+              className="bg-gradient-to-r from-primary to-secondary px-4 rounded-lg py-2 text-white cursor-pointer w-32"
+            >
+              {loading ? <Spinner /> : "Publish"}
             </button>
           </div>
         </div>

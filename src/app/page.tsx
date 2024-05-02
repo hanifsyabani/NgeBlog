@@ -1,10 +1,44 @@
+"use client";
+
 import rated from "@/assets/rated.png";
 import Image from "next/image";
 import imgbloglong from "@/assets/bloglong.png";
-import Card from "@/components/HomePage/Card";
+import Card from "@/components/Card/Card";
 import Header from "@/components/Header/Header";
+import { useEffect, useState } from "react";
+import { Spinner } from "@chakra-ui/react";
+import Link from "next/link";
+import Recent from "@/components/HomePage/Recent";
+import bg from "@/assets/bg.png";
+
+interface Blog {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  image: string;
+  createdAt: string;
+}
 
 export default function Home() {
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function getBlog() {
+      setLoading(true);
+      const res = await fetch("/api/blog");
+      if (res.ok) {
+        const data = await res.json();
+        setBlogs(data.slice(0, 6));
+      } else {
+        console.log("error");
+      }
+      setLoading(false);
+    }
+    getBlog();
+  }, []);
+
   return (
     <>
       <section className="text-center pt-36 pb-20">
@@ -29,7 +63,7 @@ export default function Home() {
       </section>
 
       <section className="mt-10 px-[5%]">
-        <Header headertitle="Recent Blog Post"/>
+        <Header headertitle="Recent Blog Post" />
         <div className="flex mt-5 gap-7">
           <div className="w-[90%]">
             <Image src={imgbloglong} alt="bloglong" className="w-full" />
@@ -54,8 +88,8 @@ export default function Home() {
             </div>
           </div>
           <div>
-            <Card />
-            <Card />
+            <Recent />
+            <Recent />
           </div>
         </div>
         <div className="flex gap-14 mt-20">
@@ -84,9 +118,30 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20  pb-20">
-        <div className="bg-gradient-to-tr px-[5%] from-primary via-secondary to-tersier text-white">
-          <h1>All Blog Posts</h1>
+      <section className="mt-20 px-[5%]">
+        <div className="bg-gradient-to-tr px-[5%] from-primary via-secondary to-tersier text-white py-10 rounded-xl ">
+          <h1 className="text-xl font-bold">All Blog Posts</h1>
+          <div className="flex justify-center items-center mt-4">
+            {loading ? <Spinner size={"xl"} /> : <Card blogs={blogs} />}
+          </div>
+          <Link href={"/category"} className="flex justify-center items-center mt-4">
+            <button className="bg-white hover:bg-white/65 px-4 py-2 mx-auto rounded-full w-32 text-center text-black  font-semibold">
+              View More
+            </button>
+          </Link>
+        </div>
+      </section>
+
+      <section className="relative">
+        <Image src={bg} alt="bloglong" className="w-full -z-10" />
+        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-center">
+          <h1 className="text-white text-5xl font-extrabold max-w-lg">Ready to unleash your teams full potential?</h1>
+          <div className="flex justify-center items-center gap-6 my-6">
+            <button className="bg-white w-52 py-4 font-bold text-secondary text-center rounded-full">YES, lets do this</button>
+            <button className="bg-transparent w-44 text-center border py-4 rounded-full border-gray-400 text-gray-400 ">Show me more</button>
+          </div>
+          <p className="text-gray-400">Free forever. No credit card required</p>
+          <small className="text-gray-400">Join 2+ million temas today!</small>
         </div>
       </section>
     </>
