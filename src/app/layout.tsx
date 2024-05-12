@@ -25,13 +25,11 @@ export default function RootLayout({
       <html lang="en">
         <link rel="icon" href="/logo.png" />
         <body className={inter.className}>
-          {userId && (
-            <Providers>
-              <NextTopLoader color="#f97316" />
-              <Navbar userId={userId}  />
-              {children}
-            </Providers>
-          )}
+          <Providers>
+            <NextTopLoader color="#f97316" />
+            <Navbar userId={userId} />
+            {children}
+          </Providers>
         </body>
       </html>
     </ClerkProvider>

@@ -2,7 +2,9 @@
 
 import { Spinner, useToast } from "@chakra-ui/react";
 import { useUser } from "@clerk/nextjs";
-import { ChangeEvent, useState } from "react";
+import Aos from "aos";
+import 'aos/dist/aos.css';
+import { ChangeEvent, useEffect, useState } from "react";
 
 interface Message {
   name: string;
@@ -86,19 +88,24 @@ export default function Contact() {
   };
 
 
+  useEffect(() =>{
+    Aos.init();
+  })
+
+
   return (
-    <div className=" w-full relative">
-      <div className="pt-24 text-center bg-gradient-to-r from-primary via-tersier to-secondary lg:h-[60vh] w-full">
+    <div className="w-full lg:relative">
+      <div className="lg:pt-24 py-20 text-center bg-gradient-to-r from-primary via-tersier to-secondary lg:h-[60vh] w-full" data-aos = 'zoom-in' data-aos-duration="900" data-aos-delay = '500'>
         <h1 className="text-6xl font-bold text-white">Contact</h1>
         <p className=" text-white">
           Have a question or just want to say hi? Dont hesitate, we love to hear
           from you.
         </p>
       </div>
-      <div className="bg-white absolute w-[80%] left-1/2 -translate-x-1/2 top-52 rounded-2xl p-4 shadow-2xl">
-        <form onSubmit={handleSubmit}>
-          <div className="flex justify-center items-center mx-auto gap-6">
-            <div className="w-1/2 ">
+      <div className="bg-white absolute lg:w-[80%] w-full left-1/2 -translate-x-1/2 lg:top-52 top-64 rounded-2xl p-4 shadow-2xl -z-10 lg:z-10">
+        <form onSubmit={handleSubmit}  data-aos='fade-up' data-aos-duration="1000" data-aos-delay = '500'>
+          <div className="lg:flex justify-center items-center mx-auto gap-6">
+            <div className="lg:w-1/2 ">
               <div className="mb-4">
                 <label htmlFor="name" className="block text-sm font-bold">
                   Name
@@ -126,7 +133,7 @@ export default function Contact() {
                 />
               </div>
             </div>
-            <div className="w-1/2">
+            <div className="lg:w-1/2">
               <div className="mb-4">
                 <label htmlFor="email" className="block text-sm font-bold">
                   Email

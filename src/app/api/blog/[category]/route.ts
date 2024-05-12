@@ -8,10 +8,6 @@ export async function GET(
 ) {
 
   try {
-    const { userId } = auth();
-    if (!userId)
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-
     const {category} = params;
     
     const blog = await prisma.post.findMany({

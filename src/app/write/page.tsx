@@ -43,12 +43,15 @@ export default function Write() {
           isClosable: true,
           position: "top",
         });
-        window.location.reload();
-        setLoading(false);
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000)
       } else {
+        const data = await resFile.json();
         toast({
           title: "Error",
-          description: "Something went wrong",
+          description: data.message,
           status: "error",
           duration: 3000,
           isClosable: true,
@@ -65,10 +68,10 @@ export default function Write() {
   }
 
   return (
-    <div className="pt-20 px-[4%]">
+    <div className="py-20 px-[4%]">
       <Header headertitle="New Blog" />
-      <form className="flex justify-center mt-6  gap-7" onSubmit={handleSubmit}>
-        <div className="w-[70%]">
+      <form className="lg:flex justify-center mt-6  gap-7" onSubmit={handleSubmit}>
+        <div className="lg:w-[70%]">
           <label htmlFor="title" className="block">
             Title
           </label>
@@ -89,7 +92,7 @@ export default function Write() {
             />
           </div>
         </div>
-        <div className="w-[30%]">
+        <div className="lg:w-[30%] mt-24 lg:mt-0">
           <div className="border border-gray-400 p-2 rounded-md">
             <h1 className="font-bold text-xl">Publish</h1>
             <div className="mt-4">
@@ -137,7 +140,7 @@ export default function Write() {
             </button>
             <button
               type="submit"
-              className="bg-gradient-to-r from-primary to-secondary px-4 rounded-lg py-2 text-white cursor-pointer w-32"
+              className="bg-gradient-to-r from-primary to-secondary px-4 rounded-lg py-2 text-white cursor-pointer w-32 hover:from-secondary hover:to-primary"
             >
               {loading ? <Spinner /> : "Publish"}
             </button>

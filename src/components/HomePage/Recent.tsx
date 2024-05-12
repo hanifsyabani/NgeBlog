@@ -4,8 +4,8 @@ import imgblogshort from "@/assets/blogshort.png";
 
 export default function Recent() {
   return (
-    <div className="flex gap-6 mb-8">
-      <Image src={imgblogshort} alt="blogshort" />
+    <div className="lg:flex gap-6 mb-8">
+      <Image src={imgblogshort} alt="blogshort" className="w-full" />
       <div>
         <small>Sunday, 1 Jan 2023</small>
         <h1 className="text-xl font-bold text-gray-900">UX review presentations</h1>
